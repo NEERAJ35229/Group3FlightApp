@@ -1,7 +1,157 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model Group3Flight.Models.FlightDetailsViewModel
+
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to Home Dashboard</h1>
+<div class="container my-5">
+
+    <h2 class="mb-4 fw-bold">✈️ Find Your Flight</h2>
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 p-3">
+                <h5 class="mb-3">Filters</h5>
+
+                <form method="post" asp-action="Index">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Cabin Type</label>
+                        <select name="activeCabinType" class="form-select">
+                            <option value="all">All</option>
+                            @foreach (var cabin in Model.CabinTypes)
+                            {
+                                <option value="@cabin" selected="@(Model.ActiveCabinType == cabin)">
+                                    @cabin
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">From</label>
+                        <select name="activeFromKey" class="form-select">
+                            <option value="all">All</option>
+                            @foreach (var f in Model.Flight.Select(x => x.From).Distinct())
+                            {
+                                <option value="@f" selected="@(Model.ActiveFromKey == f)">
+                                    @f
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">To</label>
+                        <select name="activeToKey" class="form-select">
+                            <option value="all">All</option>
+                            @foreach (var t in Model.Flight.Select(x => x.To).Distinct())
+                            {
+                                <option value="@t" selected="@(Model.ActiveToKey == t)">
+                                    @t
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Departure Date</label>
+                            <input class="form-control" id="ActiveDepartureDate" name="activeDepartureDate"
+                                   value="@(Model.ActiveDepartureDate != "all" ? Model.ActiveDepartureDate : "")" autocomplete="off" />
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100 rounded-3">
+                        Apply Filters
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="row">
+
+                @if (Model.Flight != null && Model.Flight.Any())
+                {
+                    @foreach (var flight in Model.Flight)
+                    {
+                        <div class="col-md-6 mb-4">
+
+                            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+                                <img src="~/img/@flight.Airline?.ImageName"
+                                     class="card-img-top p-3"
+                                     style="height:120px; object-fit:contain;" />
+
+                                <div class="card-body">
+
+                                    <h5 class="fw-bold text-center">
+                                        @flight.From ✈ @flight.To
+                                    </h5>
+
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <div>
+                                            <small class="text-muted">Departure</small><br />
+                                            <strong>@flight.DepartureTime.ToString(@"hh\:mm")</strong>
+                                        </div>
+
+                                        <div class="text-center">
+                                            @{
+                                                var duration = flight.ArrivalTime - flight.DepartureTime;
+                                                if (duration.TotalMinutes < 0)
+                                                {
+                                                    duration = duration.Add(TimeSpan.FromHours(24));
+                                                }
+                                            }
+                                            <small class="text-muted">Duration</small><br />
+                                            <span class="text-primary fw-bold">
+                                                @duration.Hours h @duration.Minutes m
+                                            </span>
+                                        </div>
+
+                                        <div>
+                                            <small class="text-muted">Arrival</small><br />
+                                            <strong>@flight.ArrivalTime.ToString(@"hh\:mm")</strong>
+                                        </div>
+                                    </div>
+
+                                    <hr />
+
+                                    <div class="d-flex justify-content-between small">
+                                        <span>💺 @flight.CabinType</span>
+                                        <span>🛫 @flight.AircraftType</span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between small mt-2">
+                                        <span>🌱 @flight.Emission kg</span>
+                                        <span class="fw-bold text-success">
+                                            $@flight.Price
+                                        </span>
+                                    </div>
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@flight.FlightId"
+                                       class="btn btn-dark w-100 mt-3 rounded-3">
+                                        View Details
+                                    </a>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            ✈️ No flights found for your filters.
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+    </div>
 </div>

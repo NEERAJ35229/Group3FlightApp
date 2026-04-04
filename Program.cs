@@ -1,8 +1,15 @@
-var builder = WebApplication.CreateBuilder(args);
+using Group3Flight.Models;
+using Microsoft.EntityFrameworkCore;
 
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddMemoryCache();
+builder.Services.AddSession();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddDbContext<FlightDatabaseContext>(options =>
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("FlightConn")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -15,6 +22,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
 

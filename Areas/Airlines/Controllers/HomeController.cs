@@ -1,13 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Group3Flight.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Group3Flight.Areas.Airlines.Controllers
 {
     [Area("Airlines")]
     public class HomeController : Controller
     {
+        private FlightDatabaseContext context { get; set; }
+
+        public HomeController(FlightDatabaseContext ctx) => context = ctx;
+
         public IActionResult Index()
         {
-            return View();
+            var flights = context.Flight
+                .Include(r => r.Airline)
+                .OrderBy(m => m.FlightCode).ToList();
+            return View(flights);
         }
         public IActionResult Regulations()
         {

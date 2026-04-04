@@ -1,4 +1,20 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$(function () {
 
-// Write your JavaScript code.
+    let selectedDate = $('#ActiveDepartureDate').val();
+
+    $('#ActiveDepartureDate').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        minDate: moment(),
+
+        // ✅ Use model value if exists, else tomorrow
+        startDate: selectedDate
+            ? moment(selectedDate)
+            : moment().add(1, 'days'),
+
+        locale: {
+            format: 'YYYY-MM-DD'
+        }
+    });
+
+});

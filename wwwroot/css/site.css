@@ -42,3 +42,7 @@ body {
     background-position: center;
     height: 600px;
 }
+.card:hover {
+    transform: translateY(-5px);
+    transition: 0.3s;
+}

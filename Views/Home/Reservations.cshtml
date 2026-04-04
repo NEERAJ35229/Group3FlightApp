@@ -1,0 +1,117 @@
+﻿@model Group3Flight.Models.FlightDetailsViewModel
+@{
+    ViewData["Title"] = "My Reservations";
+}
+
+<div class="container my-5">
+
+    <h2 class="mb-4 fw-bold">
+        ✈️ My Reservations
+    </h2>
+
+    @if (Model.Reservation != null && Model.Reservation.Any())
+    {
+        <div class="d-flex justify-content-between mb-4">
+            <form asp-action="DeleteAllReservations" method="post"
+                  onsubmit="return confirm('Cancel all reservations?');">
+                <button type="submit" class="btn btn-danger rounded-3">
+                    🗑 Cancel All
+                </button>
+            </form>
+
+            <a asp-action="Index"
+               asp-route-activeFromKey="@Model.ActiveFromKey"
+               asp-route-activeToKey="@Model.ActiveToKey"
+               asp-route-activeDepartureDate="@Model.ActiveDepartureDate"
+               asp-route-activeCabinType="@Model.ActiveCabinType"
+               class="btn btn-outline-secondary rounded-3">
+                ← Back
+            </a>
+        </div>
+
+        <div class="row">
+            @foreach (var reservation in Model.Reservation)
+            {
+                var flight = reservation.Flight;
+
+                <div class="col-md-6 mb-4">
+
+                    <div class="card shadow-sm border-0 rounded-4 h-100 p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0">@flight.FlightCode</h5>
+                            <img src="~/img/@flight.Airline?.ImageName"
+                                 width="60"
+                                 style="object-fit:contain;" />
+                        </div>
+                        <div class="text-center mb-3">
+                            <h5>@flight.From ✈ @flight.To</h5>
+                        </div>
+                        <div class="d-flex justify-content-between text-center mb-3">
+
+                            <div>
+                                <small class="text-muted">Departure</small><br />
+                                <strong>@flight.DepartureTime.ToString(@"hh\:mm")</strong>
+                            </div>
+
+                            <div>
+                                @{
+                                    var duration = flight.ArrivalTime - flight.DepartureTime;
+                                    if (duration.TotalMinutes < 0)
+                                    {
+                                        duration = duration.Add(TimeSpan.FromHours(24));
+                                    }
+                                }
+                                <small class="text-muted">Duration</small><br />
+                                <span class="text-primary fw-bold">
+                                    @duration.Hours h @duration.Minutes m
+                                </span>
+                            </div>
+
+                            <div>
+                                <small class="text-muted">Arrival</small><br />
+                                <strong>@flight.ArrivalTime.ToString(@"hh\:mm")</strong>
+                            </div>
+
+                        </div>
+
+                        <hr />
+                        <div class="d-flex justify-content-between small mb-2">
+                            <span>💺 @flight.CabinType</span>
+                            <span>🛫 @flight.AircraftType</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between small mb-3">
+                            <span>🌱 @flight.Emission kg</span>
+                            <span class="fw-bold text-success">$@flight.Price</span>
+                        </div>
+                        <form asp-action="CancelReservation" method="post">
+                            <input type="hidden" name="id" value="@reservation.ReservationId" />
+                            <button type="submit" class="btn btn-outline-danger w-100 rounded-3">
+                                ❌ Cancel Reservation
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            ✈️ You have no reservations yet.
+        </div>
+
+        <div class="text-center mt-3">
+            <a asp-action="Index"
+               asp-route-activeFromKey="@Model.ActiveFromKey"
+               asp-route-activeToKey="@Model.ActiveToKey"
+               asp-route-activeDepartureDate="@Model.ActiveDepartureDate"
+               asp-route-activeCabinType="@Model.ActiveCabinType"
+               class="btn btn-outline-secondary rounded-3">
+                Book a Flight
+            </a>
+        </div>
+    }
+
+</div>

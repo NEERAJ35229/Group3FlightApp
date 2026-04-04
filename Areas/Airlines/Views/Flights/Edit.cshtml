@@ -1,0 +1,163 @@
+﻿@model Group3Flight.Models.Flight
+
+@{
+    string title = ViewBag.Action + " Flight";
+    ViewData["Title"] = title;
+}
+
+<div class="container my-5">
+
+    <div class="card shadow-lg border-0 rounded-4 p-4">
+
+        <h3 class="fw-bold mb-4">@title</h3>
+
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="mb-4">
+                <label asp-for="FlightCode" class="form-label fw-semibold"></label>
+                @if (ViewBag.Action == "Edit")
+                {
+                    <input asp-for="FlightCode" class="form-control" readonly />
+                }
+                else
+                {
+                    <input asp-for="FlightCode" class="form-control" placeholder="Enter Flight Code" />
+                }
+            </div>
+
+            <h5 class="mb-3 text-primary">Route Details</h5>
+            <div class="row mb-4">
+
+                <div class="col-md-6">
+                    <label asp-for="From" class="form-label"></label>
+                    <select asp-for="From" class="form-select">
+                        <option value="">Select Departure</option>
+                        <option value="Frankfurt">Frankfurt</option>
+                        <option value="Doha">Doha</option>
+                        <option value="Paris">Paris</option>
+                        <option value="Singapore">Singapore</option>
+                        <option value="Abu Dhabi">Abu Dhabi</option>
+                        <option value="Dallas">Dallas</option>
+                        <option value="Los Angeles">Los Angeles</option>
+                        <option value="Chicago">Chicago</option>
+                        <option value="Dubai">Dubai</option>
+                        <option value="New York">New York</option>
+                        <option value="London">London</option>
+                        <option value="Sydney">Sydney</option>
+                        
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="To" class="form-label"></label>
+                    <select asp-for="To" class="form-select">
+                        <option value="">Select Destination</option>
+                        <option value="Frankfurt">Frankfurt</option>
+                        <option value="Doha">Doha</option>
+                        <option value="Paris">Paris</option>
+                        <option value="Singapore">Singapore</option>
+                        <option value="Abu Dhabi">Abu Dhabi</option>
+                        <option value="Dallas">Dallas</option>
+                        <option value="Los Angeles">Los Angeles</option>
+                        <option value="Chicago">Chicago</option>
+                        <option value="Dubai">Dubai</option>
+                        <option value="New York">New York</option>
+                        <option value="London">London</option>
+                        <option value="Sydney">Sydney</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <h5 class="mb-3 text-primary">Schedule</h5>
+            <div class="row mb-4">
+
+                <div class="col-md-4">
+                    <label asp-for="Date" class="form-label"></label>
+                    <input asp-for="Date" type="date" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="DepartureTime" class="form-label"></label>
+                    <input asp-for="DepartureTime" type="time" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="ArrivalTime" class="form-label"></label>
+                    <input asp-for="ArrivalTime" type="time" class="form-control" />
+                </div>
+
+            </div>
+
+            <h5 class="mb-3 text-primary">Flight Details</h5>
+            <div class="row mb-4">
+
+                <div class="col-md-6">
+                    <label asp-for="CabinType" class="form-label"></label>
+                    <select asp-for="CabinType" class="form-select">
+                        <option value="">Select Cabin Type</option>
+                        <option>Basic Economy</option>
+                        <option>Economy</option>
+                        <option>Economy Plus</option>
+                        <option>Business</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="AircraftType" class="form-label"></label>
+                    <select asp-for="AircraftType" class="form-select">
+                        <option value="">Select Aircraft</option>
+                        <option>Boeing 777</option>
+                        <option>Boeing 787 Dreamliner</option>
+                        <option>Boeing 787</option>
+                        <option>Boeing 747</option>
+                        <option>Airbus A380</option>
+                        <option>Airbus A350</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <h5 class="mb-3 text-primary">Additional Info</h5>
+            <div class="row mb-4">
+
+                <div class="col-md-4">
+                    <label asp-for="Emission" class="form-label"></label>
+                    <input asp-for="Emission" type="number" step="0.1" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" type="number" step="0.01" class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="AirlineId" class="form-label fw-bold"></label>
+                    <select asp-for="AirlineId" asp-items="ViewBag.Airlines" class="form-select">
+                        <option value="">Select Airline</option>
+                    </select>
+                    <span asp-validation-for="AirlineId" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+
+                <a asp-controller="Home" asp-action="Index"
+                   class="btn btn-outline-secondary px-4 rounded-3">
+                    ← Cancel
+                </a>
+
+                <button type="submit" class="btn btn-dark px-4 rounded-3">
+                    💾 Save Flight
+                </button>
+
+            </div>
+
+            <input type="hidden" asp-for="FlightId" />
+
+        </form>
+
+    </div>
+</div>

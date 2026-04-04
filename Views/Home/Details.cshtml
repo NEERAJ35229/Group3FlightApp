@@ -1,0 +1,118 @@
+﻿@model Group3Flight.Models.FlightDetailsViewModel
+@{
+    ViewData["Title"] = "Flight Details";
+}
+
+<div class="container my-5">
+
+    <div class="card shadow-lg border-0 rounded-4 p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-0">@Model.Flights.FlightCode</h3>
+                <small class="text-muted">@Model.Flights.Date.ToString("dddd, MMM dd yyyy")</small>
+            </div>
+
+            <div>
+                <img src="~/img/@Model.Flights.Airline?.ImageName"
+                     alt="airline"
+                     width="80"
+                     class="img-fluid" />
+            </div>
+        </div>
+
+        <div class="bg-light rounded-3 p-4 mb-4 text-center">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h4 class="fw-bold">@Model.Flights.From</h4>
+                    <small class="text-muted">
+                        @Model.Flights.DepartureTime.ToString(@"hh\:mm")
+                    </small>
+                </div>
+
+                <div class="text-center">
+                    @{
+                        var duration = Model.Flights.ArrivalTime - Model.Flights.DepartureTime;
+                        if (duration.TotalMinutes < 0)
+                        {
+                            duration = duration.Add(TimeSpan.FromHours(24));
+                        }
+                    }
+                    <div class="text-muted small">Duration</div>
+                    <div class="fw-bold text-primary">
+                        @duration.Hours h @duration.Minutes m
+                    </div>
+                    <hr />
+                    <i class="fa-solid fa-plane text-secondary"></i>
+                </div>
+
+                <div>
+                    <h4 class="fw-bold">@Model.Flights.To</h4>
+                    <small class="text-muted">
+                        @Model.Flights.ArrivalTime.ToString(@"hh\:mm")
+                    </small>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row text-center mb-4">
+
+            <div class="col-md-3">
+                <div class="border rounded-3 p-3">
+                    <small class="text-muted">Cabin</small>
+                    <div class="fw-bold">@Model.Flights.CabinType</div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="border rounded-3 p-3">
+                    <small class="text-muted">Aircraft</small>
+                    <div class="fw-bold">@Model.Flights.AircraftType</div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="border rounded-3 p-3">
+                    <small class="text-muted">Emission</small>
+                    <div class="fw-bold text-success">
+                        @Model.Flights.Emission kg CO₂
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="border rounded-3 p-3 bg-dark text-white">
+                    <small>Price</small>
+                    <div class="fw-bold fs-5">
+                        $@Model.Flights.Price
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-between">
+
+            <a asp-action="Index"
+               asp-route-activeFromKey="@Model.ActiveFromKey"
+               asp-route-activeToKey="@Model.ActiveToKey"
+               asp-route-activeDepartureDate="@Model.ActiveDepartureDate"
+               asp-route-activeCabinType="@Model.ActiveCabinType"
+               class="btn btn-outline-secondary">
+                ← Back
+            </a>
+
+            <a asp-action="AddReservation"
+               asp-route-id="@Model.Flights.FlightId"
+               class="btn btn-dark px-4">
+                ✈️ Reserve Flight
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

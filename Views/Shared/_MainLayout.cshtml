@@ -31,7 +31,20 @@
                     </li>
                 </ul>
 
-                <ul class="navbar-nav ms-auto">
+                <ul class="nav navbar-nav navbar-right">
+                    @{
+                        var session = new Group3Flight.Models.FlightSessions(Context.Session);
+                        int? count = session.GetReservationsCount() ?? 0;
+                    }
+                    <a asp-controller="Home" asp-action="Reservations"
+                       class="text-white">
+                        @if (count.HasValue)
+                        {
+                            <h5 class="p-2">
+                                <span class="badge bg-light text-black">@count</span>
+                            </h5>
+                        }
+                    </a>
                     <li class="nav-item">
                         <a class="nav-item nav-link @(area == "Admin" && controller == "Home" && action == "Index" ? "active" : "")" asp-area="Admin" asp-controller="Users" asp-action="Index">
                             Admin
@@ -46,6 +59,13 @@
             </div>
         </div>
     </nav>
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            @TempData["Message"]
+        </div>
+    }
 </header>
 
 <main class="flex-grow-1 py-4">

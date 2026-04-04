@@ -1,0 +1,89 @@
+﻿@model Group3Flight.Models.Flight
+@{
+    ViewData["Title"] = "Delete Flight";
+}
+
+<div class="container my-5">
+
+    <div class="card shadow-lg border-0 rounded-4 p-4">
+
+        <div class="text-center mb-4">
+            <h3 class="text-danger fw-bold">⚠️ Confirm Deletion</h3>
+            <p class="text-muted">This action cannot be undone.</p>
+        </div>
+
+        <div class="bg-light rounded-3 p-4 mb-4">
+
+            <h5 class="fw-bold mb-3 text-center">
+                @Model.FlightCode
+            </h5>
+
+            <div class="d-flex justify-content-between text-center">
+
+                <div>
+                    <small class="text-muted">From</small><br />
+                    <strong>@Model.From</strong>
+                </div>
+
+                <div class="align-self-center">
+                    ✈️
+                </div>
+
+                <div>
+                    <small class="text-muted">To</small><br />
+                    <strong>@Model.To</strong>
+                </div>
+
+            </div>
+
+            <hr />
+
+            <div class="d-flex justify-content-between text-center">
+
+                <div>
+                    <small class="text-muted">Date</small><br />
+                    <strong>@Model.Date.ToString("MMM dd, yyyy")</strong>
+                </div>
+
+                <div>
+                    <small class="text-muted">Time</small><br />
+                    <strong>
+                        @Model.DepartureTime.ToString(@"hh\:mm")
+                        →
+                        @Model.ArrivalTime.ToString(@"hh\:mm")
+                    </strong>
+                </div>
+
+                <div>
+                    <small class="text-muted">Price</small><br />
+                    <strong class="text-success">$@Model.Price</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <form asp-action="Delete" method="post">
+
+            <input type="hidden" asp-for="FlightId" />
+
+            <div class="d-flex justify-content-between">
+
+                <a asp-controller="Flights"
+                   asp-action="Index"
+                   class="btn btn-outline-secondary px-4 rounded-3">
+                    ← Cancel
+                </a>
+
+                <button type="submit"
+                        class="btn btn-danger px-4 rounded-3">
+                    🗑 Delete Flight
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

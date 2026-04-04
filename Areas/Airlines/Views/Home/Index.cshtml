@@ -1,7 +1,119 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<Group3Flight.Models.Flight>
+
+@{
+    ViewData["Title"] = "Flights";
 }
 
-<div class="text-center AirD">
-    <h1 class="display-4">Airlines Dashboard</h1>
+<div class="container my-5">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">✈️ Flights Management</h3>
+
+        <a asp-controller="Flights" asp-action="Add"
+           class="btn btn-dark rounded-3">
+            + Add Flight
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4 p-3">
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Flight</th>
+                        <th>Route</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Cabin</th>
+                        <th>Aircraft</th>
+                        <th>Price</th>
+                        <th>Airline</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var flight in Model)
+                    {
+                        <tr>
+
+                            <!-- Flight Code -->
+                            <td class="fw-bold">
+                                @flight.FlightCode
+                            </td>
+
+                            <!-- Route -->
+                            <td>
+                                @flight.From <span class="text-muted">→</span> @flight.To
+                            </td>
+
+                            <!-- Date -->
+                            <td>
+                                @flight.Date.ToString("MMM dd, yyyy")
+                            </td>
+
+                            <!-- Time -->
+                            <td>
+                                <small class="text-muted">
+                                    @flight.DepartureTime.ToString(@"hh\:mm")
+                                    →
+                                    @flight.ArrivalTime.ToString(@"hh\:mm")
+                                </small>
+                            </td>
+
+                            <!-- Cabin -->
+                            <td>
+                                <span class="badge bg-primary">
+                                    @flight.CabinType
+                                </span>
+                            </td>
+
+                            <!-- Aircraft -->
+                            <td>
+                                @flight.AircraftType
+                            </td>
+
+                            <!-- Price -->
+                            <td class="fw-bold text-success">
+                                $@flight.Price
+                            </td>
+
+                            <!-- Airline Logo -->
+                            <td>
+                                <img src="~/img/@flight.Airline?.ImageName"
+                                     width="60"
+                                     style="object-fit:contain;" />
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="text-end">
+
+                                <a asp-controller="Flights"
+                                   asp-action="Edit"
+                                   asp-route-id="@flight.FlightId"
+                                   class="btn btn-sm btn-outline-warning me-2">
+                                    ✏️
+                                </a>
+
+                                <a asp-controller="Flights"
+                                   asp-action="Delete"
+                                   asp-route-id="@flight.FlightId"
+                                   class="btn btn-sm btn-outline-danger">
+                                    🗑
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
 </div>
