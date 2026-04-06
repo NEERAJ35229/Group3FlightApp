@@ -21,5 +21,10 @@
     <Folder Include="Areas\Airlines\Models\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
+	<ItemGroup>
+		<None Update="Group3Flights.db">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

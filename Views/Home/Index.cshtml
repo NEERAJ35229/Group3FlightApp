@@ -33,10 +33,10 @@
                         <label class="form-label fw-semibold">From</label>
                         <select name="activeFromKey" class="form-select">
                             <option value="all">All</option>
-                            @foreach (var f in Model.Flight.Select(x => x.From).Distinct())
+                            @foreach (var from in Model.FromCities)
                             {
-                                <option value="@f" selected="@(Model.ActiveFromKey == f)">
-                                    @f
+                                <option value="@from" selected="@(Model.ActiveFromKey == from)">
+                                    @from
                                 </option>
                             }
                         </select>
@@ -46,10 +46,10 @@
                         <label class="form-label fw-semibold">To</label>
                         <select name="activeToKey" class="form-select">
                             <option value="all">All</option>
-                            @foreach (var t in Model.Flight.Select(x => x.To).Distinct())
+                            @foreach (var to in Model.ToCities)
                             {
-                                <option value="@t" selected="@(Model.ActiveToKey == t)">
-                                    @t
+                                <option value="@to" selected="@(Model.ActiveToKey == to)">
+                                    @to
                                 </option>
                             }
                         </select>

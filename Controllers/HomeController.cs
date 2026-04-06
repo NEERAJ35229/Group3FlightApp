@@ -77,6 +77,8 @@ namespace Group3Flight.Controllers
                 "Economy Plus",
                 "Business"
             };
+            model.FromCities = _ctx.Flight.Select(f => f.From).Distinct().ToList();
+            model.ToCities = _ctx.Flight.Select(f => f.To).Distinct().ToList();
 
             model.Flight = query.ToList();
 
