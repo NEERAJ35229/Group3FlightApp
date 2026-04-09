@@ -21,7 +21,7 @@
         }
         public void SetReservationIds(List<Reservation> myReservations)
         {
-            var ids = myReservations.Select(r => r.ReservationId.ToString()).ToList();
+            var ids = myReservations.Select(r => r.FlightId.ToString()).ToList();
             SetReservationIds(ids);
         }
         public void SetReservationIds(IEnumerable<string> ids)

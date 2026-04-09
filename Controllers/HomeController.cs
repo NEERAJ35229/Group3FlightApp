@@ -1,4 +1,4 @@
-using Group3Flight.Models;
+﻿using Group3Flight.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,19 +22,44 @@ namespace Group3Flight.Controllers
 
             int? count = session.GetReservationsCount();
 
-            if (!count.HasValue)
-            {
-                var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
-                string[] ids = cookies.GetReservationIds();
+            //if (!count.HasValue)
+            //{
+            //    var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
+            //    string[] ids = cookies.GetReservationIds();
 
-                if (ids.Length > 0)
+            //    if (ids.Length > 0)
+            //    {
+            //        var myReservations = _ctx.Reservation
+            //            .Include(r => r.Flight)
+            //            .Where(r => ids.Contains(r.ReservationId.ToString()))
+            //            .ToList();
+
+            //        session.SetReservations(myReservations);
+            //    }
+            //}
+            var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
+            var ids = cookies.GetReservationIds();
+            var reservations = session.GetReservations();
+
+            if (reservations == null || !reservations.Any())
+            {
+                var idss = cookies.GetReservationIds();
+
+                if (idss.Length > 0)
                 {
-                    var myReservations = _ctx.Reservation
-                        .Include(r => r.Flight)
-                        .Where(r => ids.Contains(r.ReservationId.ToString()))
+                    var flights = _ctx.Flight
+                        .Include(f => f.Airline)
+                        .Where(f => idss.Contains(f.FlightId.ToString()))
                         .ToList();
 
-                    session.SetReservations(myReservations);
+                    reservations = flights.Select(f => new Reservation
+                    {
+                        ReservationId = f.FlightId,
+                        FlightId = f.FlightId,
+                        Flight = f
+                    }).ToList();
+
+                    session.SetReservations(reservations);
                 }
             }
 
@@ -42,14 +67,12 @@ namespace Group3Flight.Controllers
                 .Include(r => r.Airline)
                 .OrderBy(r => r.FlightCode);
 
-            // From filter
             if (!string.IsNullOrEmpty(model.ActiveFromKey) &&
                 model.ActiveFromKey.ToLower() != "all")
             {
                 query = query.Where(r => r.From == model.ActiveFromKey);
             }
 
-            // To filter
             if (!string.IsNullOrEmpty(model.ActiveToKey) &&
                 model.ActiveToKey.ToLower() != "all")
             {
@@ -63,7 +86,6 @@ namespace Group3Flight.Controllers
                 query = query.Where(r => r.Date.Date == selectedDate.Date);
             }
 
-            // Cabin filter
             if (!string.IsNullOrEmpty(model.ActiveCabinType) &&
                 model.ActiveCabinType.ToLower() != "all")
             {
@@ -85,26 +107,62 @@ namespace Group3Flight.Controllers
             return View(model);
         }
 
+        //[HttpGet]
+        //public IActionResult AddReservation(int id)
+        //{
+        //    var session = new FlightSessions(HttpContext.Session);
+        //    var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
+
+        //    var reservation = new Reservation
+        //    {
+        //        FlightId = id,
+        //    };
+
+        //    _ctx.Reservation.Add(reservation);
+        //    _ctx.SaveChanges();
+
+        //    var myReservations = session.GetReservations();
+        //    myReservations.Add(reservation);
+        //    session.SetReservations(myReservations);
+        //    cookies.SetReservationIds(myReservations);
+
+        //    TempData["Message"] = "Your ticket has been confirmed!.";
+
+        //    return RedirectToAction("Index", new
+        //    {
+        //        ActiveFromKey = session.GetActiveFrom(),
+        //        ActiveToKey = session.GetActiveTo(),
+        //        ActiveDepartureDate = session.GetActiveDepartureDate(),
+        //        ActiveCabinType = session.GetActiveCabinType()
+        //    });
+        //}
+
         [HttpGet]
         public IActionResult AddReservation(int id)
         {
             var session = new FlightSessions(HttpContext.Session);
             var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
 
-            var reservation = new Reservation
-            {
-                FlightId = id,
-            };
+            var flight = _ctx.Flight
+                .Include(f => f.Airline)
+                .FirstOrDefault(f => f.FlightId == id);
 
-            _ctx.Reservation.Add(reservation);
-            _ctx.SaveChanges();
+            if (flight == null)
+                return NotFound();
 
             var myReservations = session.GetReservations();
-            myReservations.Add(reservation);
+
+            myReservations.Add(new Reservation
+            {
+                ReservationId = id, 
+                FlightId = id,
+                Flight = flight
+            });
+
             session.SetReservations(myReservations);
             cookies.SetReservationIds(myReservations);
 
-            TempData["Message"] = "Your ticket has been confirmed!.";
+            TempData["Message"] = "Your ticket has been confirmed!";
 
             return RedirectToAction("Index", new
             {
@@ -115,18 +173,59 @@ namespace Group3Flight.Controllers
             });
         }
 
+        //public IActionResult Reservations()
+        //{
+        //    var session = new FlightSessions(HttpContext.Session);
+        //    var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
+
+        //    var reservationIds = cookies.GetReservationIds();
+
+        //    var reservations = _ctx.Reservation
+        //        .Include(r => r.Flight)
+        //            .ThenInclude(f => f.Airline)
+        //        .Where(r => reservationIds.Contains(r.ReservationId.ToString()))
+        //        .ToList();
+
+        //    var model = new FlightDetailsViewModel
+        //    {
+        //        Reservation = reservations,
+        //        ActiveFromKey = session.GetActiveFrom(),
+        //        ActiveToKey = session.GetActiveTo(),
+        //        ActiveDepartureDate = session.GetActiveDepartureDate(),
+        //        ActiveCabinType = session.GetActiveCabinType()
+        //    };
+
+        //    return View(model);
+        //}
+
         public IActionResult Reservations()
         {
             var session = new FlightSessions(HttpContext.Session);
             var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
 
-            var reservationIds = cookies.GetReservationIds();
+            var reservations = session.GetReservations();
 
-            var reservations = _ctx.Reservation
-                .Include(r => r.Flight)
-                    .ThenInclude(f => f.Airline)
-                .Where(r => reservationIds.Contains(r.ReservationId.ToString()))
-                .ToList();
+            if (reservations == null || !reservations.Any())
+            {
+                var ids = cookies.GetReservationIds();
+
+                if (ids.Length > 0)
+                {
+                    var flights = _ctx.Flight
+                        .Include(f => f.Airline)
+                        .Where(f => ids.Contains(f.FlightId.ToString()))
+                        .ToList();
+
+                    reservations = flights.Select(f => new Reservation
+                    {
+                        ReservationId = f.FlightId,
+                        FlightId = f.FlightId,
+                        Flight = f
+                    }).ToList();
+
+                    session.SetReservations(reservations);
+                }
+            }
 
             var model = new FlightDetailsViewModel
             {
@@ -140,57 +239,92 @@ namespace Group3Flight.Controllers
             return View(model);
         }
 
+        //[HttpPost]
+        //public IActionResult DeleteAllReservations()
+        //{
+        //    var session = new FlightSessions(HttpContext.Session);
+        //    var myReservations = session.GetReservations();
+
+        //    if (myReservations != null && myReservations.Any())
+        //    {
+        //        var ids = myReservations.Select(r => r.ReservationId).ToList();
+
+        //        var reservations = _ctx.Reservation
+        //            .Where(r => ids.Contains(r.ReservationId))
+        //            .ToList();
+
+        //        _ctx.Reservation.RemoveRange(reservations);
+        //        _ctx.SaveChanges();
+
+        //        session.RemoveMyReservations();
+
+        //        var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
+        //        cookies.RemoveReservationIds();
+        //    }
+
+        //    TempData["Message"] = "All Reservations cancelled successfully!";
+        //    return RedirectToAction("Reservations");
+        //}
         [HttpPost]
         public IActionResult DeleteAllReservations()
         {
             var session = new FlightSessions(HttpContext.Session);
-            var myReservations = session.GetReservations();
 
-            if (myReservations != null && myReservations.Any())
-            {
-                var ids = myReservations.Select(r => r.ReservationId).ToList();
+            session.RemoveMyReservations();
 
-                var reservations = _ctx.Reservation
-                    .Where(r => ids.Contains(r.ReservationId))
-                    .ToList();
-
-                _ctx.Reservation.RemoveRange(reservations);
-                _ctx.SaveChanges();
-
-                session.RemoveMyReservations();
-
-                var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
-                cookies.RemoveReservationIds();
-            }
+            var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
+            cookies.RemoveReservationIds();
 
             TempData["Message"] = "All Reservations cancelled successfully!";
+
             return RedirectToAction("Reservations");
         }
 
 
+        //[HttpPost]
+        //public IActionResult CancelReservation(int id)
+        //{
+        //    var session = new FlightSessions(HttpContext.Session);
+        //    var reservation = _ctx.Reservation.Find(id);
+        //    if (reservation != null)
+        //    {
+        //        _ctx.Reservation.Remove(reservation);
+        //        _ctx.SaveChanges();
+        //    }
+
+        //    var myReservations = session.GetReservations();
+        //    var reservation1 = myReservations.FirstOrDefault(r => r.ReservationId == id);
+        //    if (reservation1 != null)
+        //    {
+        //        myReservations.Remove(reservation1);
+        //        session.SetReservations(myReservations);
+        //    }
+
+        //    var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
+        //    cookies.RemoveReservationId(id);
+
+        //    TempData["Message"] = "Ticket cancelled successfully!";
+        //    return RedirectToAction("Reservations");
+        //}
         [HttpPost]
         public IActionResult CancelReservation(int id)
         {
             var session = new FlightSessions(HttpContext.Session);
-            var reservation = _ctx.Reservation.Find(id);
-            if (reservation != null)
-            {
-                _ctx.Reservation.Remove(reservation);
-                _ctx.SaveChanges();
-            }
 
             var myReservations = session.GetReservations();
-            var reservation1 = myReservations.FirstOrDefault(r => r.ReservationId == id);
-            if (reservation1 != null)
+            var reservation = myReservations.FirstOrDefault(r => r.ReservationId == id);
+
+            if (reservation != null)
             {
-                myReservations.Remove(reservation1);
+                myReservations.Remove(reservation);
                 session.SetReservations(myReservations);
             }
 
             var cookies = new FlightCookies(Request.Cookies, Response.Cookies);
-            cookies.RemoveReservationId(id);
+            cookies.SetReservationIds(myReservations);
 
             TempData["Message"] = "Ticket cancelled successfully!";
+
             return RedirectToAction("Reservations");
         }
 

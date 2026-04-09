@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Group3Flight.Migrations
 {
     [DbContext(typeof(FlightDatabaseContext))]
-    [Migration("20260403200953_InitialCreate")]
+    [Migration("20260409183532_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

@@ -39,9 +39,10 @@
                     <div class="card shadow-sm border-0 rounded-4 h-100 p-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="fw-bold mb-0">@flight.FlightCode</h5>
-                            <img src="~/img/@flight.Airline?.ImageName"
+                            @* <img src="~/img/@flight.Airline?.ImageName"
                                  width="60"
-                                 style="object-fit:contain;" />
+                                 style="object-fit:contain;" /> *@
+                            <img src="~/img/@(flight.Airline?.ImageName ?? "default.png")" width="60" style="object-fit:contain;" />
                         </div>
                         <div class="text-center mb-3">
                             <h5>@flight.From ✈ @flight.To</h5>
