@@ -15,3 +15,7 @@
     });
 
 });
+$("#FlightCode, #Date").on("change blur", function () {
+    $("#FlightCode").valid();
+    $("#Date").valid();
+});

@@ -1,4 +1,5 @@
-﻿using Group3Flight.Models;
+﻿using System.Security.Policy;
+using Group3Flight.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -36,6 +37,16 @@ namespace Group3Flight.Areas.Airlines.Controllers
         [HttpPost]
         public IActionResult Edit(Flight flight)
         {
+
+            if (TempData["okFlight"] == null)
+            {
+                string msg = Check.FlightCodeDateExists(_ctx, flight.FlightCode.ToString(), flight.Date);
+                if (!string.IsNullOrEmpty(msg))
+                {
+                    ModelState.AddModelError(nameof(flight.FlightCode), msg);
+                    TempData["Message"] = "Please fix the error";
+                }
+            }
             if (ModelState.IsValid)
             {
                 if (flight.FlightId == 0)
