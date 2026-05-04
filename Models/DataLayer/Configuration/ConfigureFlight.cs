@@ -1,27 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Group3Flight.Models.DomainModels;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Group3Flight.Models
 {
-    public class FlightDatabaseContext : DbContext
+    internal class ConfigureFlight : IEntityTypeConfiguration<Flight>
     {
-        public FlightDatabaseContext(DbContextOptions<FlightDatabaseContext> options)
-            : base(options) { }
-        public DbSet<Flight> Flight { get; set; } = null!;
-        public DbSet<Airline> Airline { get; set; } = null!;
-        public DbSet<Reservation> Reservation { get; set; } = null!;
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public void Configure(EntityTypeBuilder<Flight> entity)
         {
-            modelBuilder.Entity<Airline>().HasData(
-                new Airline { AirlineId = 1, Name = "Emirates", ImageName = "emirates.png" },
-                new Airline { AirlineId = 2, Name = "Qatar Airways", ImageName = "qatar_airways.png" },
-                new Airline { AirlineId = 3, Name = "Lufthansa", ImageName = "lufthansa.png" },
-                new Airline { AirlineId = 4, Name = "Air France", ImageName = "air_france.png" },
-                new Airline { AirlineId = 5, Name = "Singapore Airlines", ImageName = "singapore_airlines.png" },
-                new Airline { AirlineId = 6, Name = "Etihad Airways", ImageName = "etihad_airways.png" }
-            );
-
-            modelBuilder.Entity<Flight>().HasData(
+            // seed initial data
+            entity.HasData(
                 new Flight
                 {
                     FlightId = 1,
@@ -114,6 +102,6 @@ namespace Group3Flight.Models
                 }
             );
         }
-
     }
+
 }

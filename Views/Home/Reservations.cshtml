@@ -1,4 +1,4 @@
-﻿@model Group3Flight.Models.FlightDetailsViewModel
+﻿@model Group3Flight.Models.ViewModels.FlightDetailsViewModel
 @{
     ViewData["Title"] = "My Reservations";
 }
@@ -18,7 +18,11 @@
                     🗑 Cancel All
                 </button>
             </form>
-
+            <form asp-action="ReserveAll" method="post">
+                <button type="submit" class="btn btn-outline-danger w-100 rounded-3">
+                    Reserve
+                </button>
+            </form>
             <a asp-action="Index"
                asp-route-activeFromKey="@Model.ActiveFromKey"
                asp-route-activeToKey="@Model.ActiveToKey"
@@ -91,7 +95,7 @@
                                 ❌ Cancel Reservation
                             </button>
                         </form>
-
+                        
                     </div>
                 </div>
             }

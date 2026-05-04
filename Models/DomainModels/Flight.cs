@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Group3Flight.Models.Validations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace Group3Flight.Models
+namespace Group3Flight.Models.DomainModels
 {
     public class Flight
     {

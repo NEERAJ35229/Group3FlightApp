@@ -1,4 +1,5 @@
-﻿using Group3Flight.Models;
+﻿using Group3Flight.Models.DataLayer;
+using Group3Flight.Models.Validations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Group3Flight.Controllers

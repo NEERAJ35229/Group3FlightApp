@@ -33,7 +33,7 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     @{
-                        var session = new Group3Flight.Models.FlightSessions(Context.Session);
+                        var session = new Group3Flight.Models.ExtensionMethods.FlightSessions(Context.Session);
                         int? count = session.GetReservationsCount() ?? 0;
                     }
                     <a asp-controller="Home" asp-action="Reservations"

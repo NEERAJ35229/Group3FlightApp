@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
-namespace Group3Flight.Models
+namespace Group3Flight.Models.Validations
 {
     public class FutureDateValidationAttribute : ValidationAttribute, IClientModelValidator
     {
@@ -45,6 +45,6 @@ namespace Group3Flight.Models
         }
 
         private string GetMsg(string name) =>
-            base.ErrorMessage ?? $"{name} must be greater than today and within {maxYears} years.";
+            ErrorMessage ?? $"{name} must be greater than today and within {maxYears} years.";
     }
 }

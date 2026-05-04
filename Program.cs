@@ -1,4 +1,6 @@
 using Group3Flight.Models;
+using Group3Flight.Models.DataLayer;
+using Group3Flight.Models.DataLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +8,10 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddDbContext<FlightDatabaseContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("FlightConn")));

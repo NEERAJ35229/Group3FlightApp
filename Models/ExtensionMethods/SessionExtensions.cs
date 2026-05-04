@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Group3Flight.Models
+namespace Group3Flight.Models.ExtensionMethods
 {
     public static class SessionExtensions
     {
@@ -15,7 +15,7 @@ namespace Group3Flight.Models
             var json = session.GetString(key);
             if (string.IsNullOrEmpty(json))
             {
-                return default(T);
+                return default;
             }
             else
             {

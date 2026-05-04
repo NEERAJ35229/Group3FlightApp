@@ -1,4 +1,4 @@
-﻿using Group3Flight.Models;
+﻿using Group3Flight.Models.DataLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

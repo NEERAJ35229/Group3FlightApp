@@ -1,4 +1,6 @@
-﻿namespace Group3Flight.Models
+﻿using Group3Flight.Models.DataLayer;
+
+namespace Group3Flight.Models.Validations
 {
     public static class Check
     {

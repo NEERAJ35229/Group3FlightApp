@@ -1,4 +1,6 @@
-﻿namespace Group3Flight.Models
+﻿using Group3Flight.Models.DomainModels;
+
+namespace Group3Flight.Models.ExtensionMethods
 {
     public class FlightCookies
     {
@@ -41,7 +43,7 @@
         }
         public string[] GetReservationIds()
         {
-            string cookie = requestCookies[ReservationKey] ?? String.Empty;
+            string cookie = requestCookies[ReservationKey] ?? string.Empty;
             if (string.IsNullOrEmpty(cookie))
                 return Array.Empty<string>();
             else
